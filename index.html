@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HR Management Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">    
+    
+</head>
+
+<body>
+
+    <div class="dashboard-container min-h-screen flex flex-col">
+
+        <header class="top-header flex flex-wrap items-center justify-between p-4 gap-4">
+            <div class="brand-section flex items-center gap-2">
+                <a href="/" aria-label="Go to Dashboard Home">
+                    <img src="#" alt="Circle Soft Logo" class="logo-icon">
+                    <h1>Circle Soft</h1>
+                </a>
+            </div>
+
+            <div class="search-section flex-1 flex justify-center w-full sm:w-auto">
+                <form role="search">
+                    <input type="search" name="q" placeholder="Search..." aria-label="Search dashboard">
+                </form>
+            </div>
+
+            <nav class="actions-section flex items-center gap-4" aria-label="User Actions">
+                <ul class="flex gap-2">
+                    <li>
+                        <button type="button" aria-label="Toggle Dark Mode">
+                            <span class="icon-moon">🌙</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button type="button" aria-label="Notifications">
+                            <span class="icon-bell">🔔</span>
+                        </button>
+                    </li>
+                </ul>
+            </nav>
+        </header>
+
+        <div class="content-wrapper flex flex-col lg:flex-row flex-1">
+
+            <aside class="sidebar w-full lg:w-64 flex flex-col p-4 gap-6">
+                <div class="user-profile flex items-center gap-3">
+                    <img src="#" alt="Gavano" class="avatar">
+                    <div class="user-info">
+                        <p class="user-name">Gavano</p>
+                        <p class="user-role">HR Manager</p>
+                    </div>
+                    <button type="button" aria-label="User Options">...</button>
+                </div>
+
+                <nav class="primary-nav flex flex-col gap-2" aria-label="Main Navigation">
+                    <ul class="flex flex-col gap-2">
+                        <li><a href="#" class="active"><span class="icon">📊</span> Dashboard</a></li>
+                        <li><a href="#"><span class="icon">💰</span> Finance</a></li>
+                        <li><a href="#"><span class="icon">👥</span> Employees</a></li>
+                        <li><a href="#"><span class="icon">🏢</span> Company</a></li>
+                        <li><a href="#"><span class="icon">👤</span> Candidate</a></li>
+                        <li><a href="#"><span class="icon">📅</span> Calendar</a></li>
+                    </ul>
+                </nav>
+
+                <nav class="secondary-nav mt-auto flex flex-col gap-2" aria-label="Secondary Navigation">
+                    <ul class="flex flex-col gap-2">
+                        <li><a href="#"><span class="icon">👤</span> Profile</a></li>
+                        <li><a href="#"><span class="icon">⚙️</span> Setting</a></li>
+                    </ul>
+                </nav>
+            </aside>
+
+            <main class="main-content flex-1 p-4 lg:p-8 overflow-x-hidden">
+                <div class="dashboard-wrapper flex flex-col gap-8">
+                    <section class="stats-overview grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
+                        aria-labelledby="kpi-heading">
+                        <h2 id="kpi-heading" class="visually-hidden">Key Performance Indicators</h2>
+                        <article class="stat-card">
+                            <h3>Total Employees</h3>
+                            <div class="stat-value">
+                                <span class="number">856</span>
+                                <span class="trend positive">↗ 10.0%</span>
+                            </div>
+                            <p class="subtitle">Employee</p>
+                        </article>
+
+                        <article class="stat-card">
+                            <h3>Job View</h3>
+                            <div class="stat-value">
+                                <span class="number">3,342</span>
+                                <span class="trend positive">↗ 22.0%</span>
+                            </div>
+                            <p class="subtitle">Viewers</p>
+                        </article>
+
+                        <article class="stat-card">
+                            <h3>Job Applied</h3>
+                            <div class="stat-value">
+                                <span class="number">77</span>
+                                <span class="trend positive">↗ 12.0%</span>
+                            </div>
+                            <p class="subtitle">Applicants</p>
+                        </article>
+
+                        <article class="stat-card">
+                            <h3>Resigned Employees</h3>
+                            <div class="stat-value">
+                                <span class="number">17</span>
+                                <span class="trend negative">↘ 7.0%</span>
+                            </div>
+                            <p class="subtitle">Employee</p>
+                        </article>
+                    </section>
+
+                    <section class="chart-section" aria-labelledby="job-stats-heading">
+                        <header
+                            class="section-header flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+                            <h2 id="job-stats-heading">Job Statistics</h2>
+                            <div class="chart-controls flex items-center gap-4">
+                                <div class="legend">
+                                    <span class="legend-item"><span class="dot view"></span> Job View</span>
+                                    <span class="legend-item"><span class="dot applied"></span> Job Applied</span>
+                                </div>
+                                <select name="time-period" aria-label="Select Time Period">
+                                    <option value="this-month">This Month</option>
+                                </select>
+                            </div>
+                        </header>
+                        <div class="chart-container">
+                            <div class="bar-chart-placeholder">[Bar Chart Visualization]</div>
+                        </div>
+                    </section>
+
+                    <section class="employee-status" aria-labelledby="emp-status-heading">
+                        <header class="section-header flex justify-between items-center mb-4">
+                            <h2 id="emp-status-heading">Employee Status</h2>
+                            <button type="button" class="filter-btn">Filter & Short ⚡</button>
+                        </header>
+
+                        <div class="overflow-x-auto">
+                            <table class="w-full min-w-[600px]">
+                                <thead>
+                                    <tr>
+                                        <th>Employee Name</th>
+                                        <th>Department</th>
+                                        <th>Age</th>
+                                        <th>Discipline</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="user-cell">
+                                            <img src="#" alt="Avatar" class="small-avatar">
+                                            Justin Lipshutz
+                                        </td>
+                                        <td>Marketing</td>
+                                        <td>22</td>
+                                        <td class="positive">+100%</td>
+                                        <td><span class="status-badge permanent">Permanent</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="user-cell">
+                                            <img src="#" alt="Avatar" class="small-avatar">
+                                            Marcus Culhane
+                                        </td>
+                                        <td>Finance</td>
+                                        <td>24</td>
+                                        <td class="positive">+95%</td>
+                                        <td><span class="status-badge contract">Contract</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="user-cell">
+                                            <img src="#" alt="Avatar" class="small-avatar">
+                                            Leo Stanton
+                                        </td>
+                                        <td>R&D</td>
+                                        <td>28</td>
+                                        <td class="positive">+89%</td>
+                                        <td><span class="status-badge permanent">Permanent</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+
+                    <section class="employee-composition" aria-labelledby="emp-comp-heading">
+                        <header class="section-header mb-4">
+                            <h2 id="emp-comp-heading">Employee Composition</h2>
+                        </header>
+                        <div class="donut-chart-container flex flex-col lg:flex-row items-center gap-8">
+                            <div class="donut-chart-placeholder">
+                                [Donut Chart]
+                                <div class="chart-center-text">856 employee total</div>
+                            </div>
+                            <div class="chart-labels flex flex-col gap-2">
+                                <span class="label-female">Details for Female %</span>
+                                <span class="label-male">Details for Male %</span>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </main>
+        </div>
+    </div>
+
+</body>
+
+</html>
