@@ -5,209 +5,644 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HR Management Dashboard</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">    
-    
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        indigo: { 50: '#eef2ff', 100: '#e0e7ff', 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca', 900: '#312e81' },
+                        slate: { 850: '#1e293b' }
+                    }
+                }
+            }
+        }
+
+        // Initialize theme based on local storage or system preference
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+
+        function toggleTheme() {
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                localStorage.theme = 'light';
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.theme = 'dark';
+            }
+        }
+    </script>
 </head>
 
-<body>
+<body
+    class="bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 font-sans antialiased transition-colors duration-200">
 
     <div class="dashboard-container min-h-screen flex flex-col">
 
-        <header class="top-header flex flex-wrap items-center justify-between p-4 gap-4">
-            <div class="brand-section flex items-center gap-2">
-                <a href="/" aria-label="Go to Dashboard Home">
-                    <img src="#" alt="Circle Soft Logo" class="logo-icon">
-                    <h1>Circle Soft</h1>
+        <header
+            class="top-header sticky top-0 z-50 bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 flex flex-wrap items-center justify-between px-4 sm:px-6 py-3 gap-4 shadow-sm transition-colors duration-200">
+            <div class="brand-section flex items-center gap-3">
+                <a href="/" aria-label="Go to Dashboard Home" class="flex items-center gap-2 group">
+                    <div
+                        class="logo-icon w-8 h-8 flex items-center justify-center bg-indigo-600 text-white rounded-lg shadow-lg group-hover:bg-indigo-700 transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                        </svg>
+                    </div>
+                    <h1
+                        class="text-xl font-bold bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent">
+                        Circle Soft</h1>
                 </a>
             </div>
 
-            <div class="search-section flex-1 flex justify-center w-full sm:w-auto">
-                <form role="search">
-                    <input type="search" name="q" placeholder="Search..." aria-label="Search dashboard">
+            <div class="search-section flex-1 flex justify-center w-full sm:w-auto max-w-md mx-auto">
+                <form role="search" class="w-full relative group">
+                    <div
+                        class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400 group-focus-within:text-indigo-500 transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                    </div>
+                    <input type="search" name="q" placeholder="Search dashboard..." aria-label="Search dashboard"
+                        class="w-full bg-slate-100 dark:bg-slate-700/50 border-none rounded-xl py-2.5 pl-10 pr-4 text-sm text-slate-700 dark:text-slate-200 placeholder-slate-400 focus:ring-2 focus:ring-indigo-500 focus:bg-white dark:focus:bg-slate-800 transition-all shadow-sm">
                 </form>
             </div>
 
-            <nav class="actions-section flex items-center gap-4" aria-label="User Actions">
-                <ul class="flex gap-2">
+            <nav class="actions-section flex items-center gap-2 sm:gap-4" aria-label="User Actions">
+                <ul class="flex items-center gap-1 sm:gap-2">
                     <li>
-                        <button type="button" aria-label="Toggle Dark Mode">
-                            <span class="icon-moon">🌙</span>
+                        <button type="button" aria-label="Toggle Dark Mode" onclick="toggleTheme()"
+                            class="p-2 rounded-full text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <!-- Moon for Light Mode -->
+                            <span class="text-xl block dark:hidden">🌙</span>
+                            <!-- Sun for Dark Mode -->
+                            <span class="text-xl hidden dark:block">☀️</span>
                         </button>
                     </li>
                     <li>
-                        <button type="button" aria-label="Notifications">
-                            <span class="icon-bell">🔔</span>
+                        <button type="button" aria-label="Notifications"
+                            class="p-2 rounded-full text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 relative">
+                            <span class="text-xl">🔔</span>
+                            <span
+                                class="absolute top-2 right-2 w-2 h-2 bg-rose-500 rounded-full border border-white dark:border-slate-800"></span>
                         </button>
                     </li>
                 </ul>
             </nav>
         </header>
 
-        <div class="content-wrapper flex flex-col lg:flex-row flex-1">
+        <div class="content-wrapper flex flex-col lg:flex-row flex-1 overflow-hidden">
 
-            <aside class="sidebar w-full lg:w-64 flex flex-col p-4 gap-6">
-                <div class="user-profile flex items-center gap-3">
-                    <img src="#" alt="Gavano" class="avatar">
-                    <div class="user-info">
-                        <p class="user-name">Gavano</p>
-                        <p class="user-role">HR Manager</p>
+            <aside
+                class="sidebar w-full lg:w-72 bg-white dark:bg-slate-800 border-r border-slate-200 dark:border-slate-700 flex flex-col p-6 gap-8 hidden lg:flex overflow-y-auto">
+                <div
+                    class="user-profile flex items-center gap-4 p-4 bg-indigo-50 dark:bg-slate-700/50 rounded-2xl border border-indigo-100 dark:border-indigo-500/10">
+                    <div class="relative">
+                        <img src="https://ui-avatars.com/api/?name=Gavano&background=4f46e5&color=fff" alt="Gavano"
+                            class="avatar w-12 h-12 rounded-full object-cover ring-2 ring-white dark:ring-slate-600 shadow-sm">
+                        <span
+                            class="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 border-2 border-white dark:border-slate-700 rounded-full"></span>
                     </div>
-                    <button type="button" aria-label="User Options">...</button>
+                    <div class="user-info flex-1 min-w-0">
+                        <p class="user-name font-bold text-slate-900 dark:text-white truncate">Gavano</p>
+                        <p class="user-role text-xs font-medium text-indigo-600 dark:text-indigo-400 truncate">HR
+                            Manager</p>
+                    </div>
+                    <button type="button" aria-label="User Options"
+                        class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z">
+                            </path>
+                        </svg>
+                    </button>
                 </div>
 
-                <nav class="primary-nav flex flex-col gap-2" aria-label="Main Navigation">
-                    <ul class="flex flex-col gap-2">
-                        <li><a href="#" class="active"><span class="icon">📊</span> Dashboard</a></li>
-                        <li><a href="#"><span class="icon">💰</span> Finance</a></li>
-                        <li><a href="#"><span class="icon">👥</span> Employees</a></li>
-                        <li><a href="#"><span class="icon">🏢</span> Company</a></li>
-                        <li><a href="#"><span class="icon">👤</span> Candidate</a></li>
-                        <li><a href="#"><span class="icon">📅</span> Calendar</a></li>
+                <nav class="primary-nav flex flex-col gap-2 flex-1" aria-label="Main Navigation">
+                    <h3 class="px-4 text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Menu</h3>
+                    <ul class="flex flex-col gap-1">
+                        <li>
+                            <a href="#"
+                                class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium bg-indigo-600 text-white shadow-lg shadow-indigo-200 dark:shadow-none hover:bg-indigo-700 transition-all">
+                                <span class="icon text-lg filter drop-shadow-sm">📊</span> Dashboard
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#"
+                                class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700/50 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all group">
+                                <span class="icon text-lg grayscale group-hover:grayscale-0 transition-all">💰</span>
+                                Finance
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#"
+                                class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700/50 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all group">
+                                <span class="icon text-lg grayscale group-hover:grayscale-0 transition-all">👥</span>
+                                Employees
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#"
+                                class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700/50 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all group">
+                                <span class="icon text-lg grayscale group-hover:grayscale-0 transition-all">🏢</span>
+                                Company
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#"
+                                class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700/50 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all group">
+                                <span class="icon text-lg grayscale group-hover:grayscale-0 transition-all">👤</span>
+                                Candidate
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#"
+                                class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700/50 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all group">
+                                <span class="icon text-lg grayscale group-hover:grayscale-0 transition-all">📅</span>
+                                Calendar
+                            </a>
+                        </li>
                     </ul>
                 </nav>
 
                 <nav class="secondary-nav mt-auto flex flex-col gap-2" aria-label="Secondary Navigation">
-                    <ul class="flex flex-col gap-2">
-                        <li><a href="#"><span class="icon">👤</span> Profile</a></li>
-                        <li><a href="#"><span class="icon">⚙️</span> Setting</a></li>
+                    <h3 class="px-4 text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">General</h3>
+                    <ul class="flex flex-col gap-1">
+                        <li>
+                            <a href="#"
+                                class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700/50 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all group">
+                                <span class="icon text-lg grayscale group-hover:grayscale-0 transition-all">👤</span>
+                                Profile
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#"
+                                class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700/50 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all group">
+                                <span class="icon text-lg grayscale group-hover:grayscale-0 transition-all">⚙️</span>
+                                Setting
+                            </a>
+                        </li>
                     </ul>
                 </nav>
             </aside>
 
-            <main class="main-content flex-1 p-4 lg:p-8 overflow-x-hidden">
-                <div class="dashboard-wrapper flex flex-col gap-8">
-                    <section class="stats-overview grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
+            <main
+                class="main-content flex-1 p-4 lg:p-8 overflow-x-hidden overflow-y-auto bg-slate-50 dark:bg-slate-900 transition-colors duration-200">
+                <div class="dashboard-wrapper flex flex-col gap-8 max-w-7xl mx-auto">
+
+                    <section class="stats-overview grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
                         aria-labelledby="kpi-heading">
                         <h2 id="kpi-heading" class="visually-hidden">Key Performance Indicators</h2>
-                        <article class="stat-card">
-                            <h3>Total Employees</h3>
-                            <div class="stat-value">
-                                <span class="number">856</span>
-                                <span class="trend positive">↗ 10.0%</span>
+
+                        <article
+                            class="stat-card bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 hover:shadow-md transition-all group relative overflow-hidden">
+                            <div
+                                class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                                <span class="text-6xl">👥</span>
                             </div>
-                            <p class="subtitle">Employee</p>
+                            <h3
+                                class="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
+                                Total Employees</h3>
+                            <div class="stat-value flex items-baseline gap-2 mt-2">
+                                <span class="number text-3xl font-bold text-slate-900 dark:text-white">856</span>
+                                <span
+                                    class="trend positive inline-flex items-center gap-1 text-xs font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 px-2 py-1 rounded-full">
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
+                                            d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+                                    </svg>
+                                    10.0%
+                                </span>
+                            </div>
+                            <p class="subtitle text-xs text-slate-400 mt-4 font-medium">Employee</p>
                         </article>
 
-                        <article class="stat-card">
-                            <h3>Job View</h3>
-                            <div class="stat-value">
-                                <span class="number">3,342</span>
-                                <span class="trend positive">↗ 22.0%</span>
+                        <article
+                            class="stat-card bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 hover:shadow-md transition-all group relative overflow-hidden">
+                            <div
+                                class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                                <span class="text-6xl">👁️</span>
                             </div>
-                            <p class="subtitle">Viewers</p>
+                            <h3
+                                class="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
+                                Job View</h3>
+                            <div class="stat-value flex items-baseline gap-2 mt-2">
+                                <span class="number text-3xl font-bold text-slate-900 dark:text-white">3,342</span>
+                                <span
+                                    class="trend positive inline-flex items-center gap-1 text-xs font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 px-2 py-1 rounded-full">
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
+                                            d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+                                    </svg>
+                                    22.0%
+                                </span>
+                            </div>
+                            <p class="subtitle text-xs text-slate-400 mt-4 font-medium">Viewers</p>
                         </article>
 
-                        <article class="stat-card">
-                            <h3>Job Applied</h3>
-                            <div class="stat-value">
-                                <span class="number">77</span>
-                                <span class="trend positive">↗ 12.0%</span>
+                        <article
+                            class="stat-card bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 hover:shadow-md transition-all group relative overflow-hidden">
+                            <div
+                                class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                                <span class="text-6xl">📝</span>
                             </div>
-                            <p class="subtitle">Applicants</p>
+                            <h3
+                                class="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
+                                Job Applied</h3>
+                            <div class="stat-value flex items-baseline gap-2 mt-2">
+                                <span class="number text-3xl font-bold text-slate-900 dark:text-white">77</span>
+                                <span
+                                    class="trend positive inline-flex items-center gap-1 text-xs font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 px-2 py-1 rounded-full">
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
+                                            d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+                                    </svg>
+                                    12.0%
+                                </span>
+                            </div>
+                            <p class="subtitle text-xs text-slate-400 mt-4 font-medium">Applicants</p>
                         </article>
 
-                        <article class="stat-card">
-                            <h3>Resigned Employees</h3>
-                            <div class="stat-value">
-                                <span class="number">17</span>
-                                <span class="trend negative">↘ 7.0%</span>
+                        <article
+                            class="stat-card bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 hover:shadow-md transition-all group relative overflow-hidden">
+                            <div
+                                class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                                <span class="text-6xl">📉</span>
                             </div>
-                            <p class="subtitle">Employee</p>
+                            <h3
+                                class="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
+                                Resigned Employees</h3>
+                            <div class="stat-value flex items-baseline gap-2 mt-2">
+                                <span class="number text-3xl font-bold text-slate-900 dark:text-white">17</span>
+                                <span
+                                    class="trend negative inline-flex items-center gap-1 text-xs font-semibold text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-900/20 px-2 py-1 rounded-full">
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
+                                            d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6"></path>
+                                    </svg>
+                                    7.0%
+                                </span>
+                            </div>
+                            <p class="subtitle text-xs text-slate-400 mt-4 font-medium">Employee</p>
                         </article>
                     </section>
 
-                    <section class="chart-section" aria-labelledby="job-stats-heading">
-                        <header
-                            class="section-header flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
-                            <h2 id="job-stats-heading">Job Statistics</h2>
-                            <div class="chart-controls flex items-center gap-4">
-                                <div class="legend">
-                                    <span class="legend-item"><span class="dot view"></span> Job View</span>
-                                    <span class="legend-item"><span class="dot applied"></span> Job Applied</span>
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        <section
+                            class="chart-section lg:col-span-2 bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700"
+                            aria-labelledby="job-stats-heading">
+                            <header class="section-header flex flex-wrap items-center justify-between gap-4 mb-6">
+                                <h2 id="job-stats-heading" class="text-lg font-bold text-slate-900 dark:text-white">Job
+                                    Statistics</h2>
+                                <div class="chart-controls flex items-center gap-4 text-sm">
+                                    <div class="legend flex items-center gap-4 hidden sm:flex">
+                                        <span
+                                            class="legend-item flex items-center gap-2 text-slate-500 dark:text-slate-400 text-xs font-medium">
+                                            <span class="dot view w-3 h-3 rounded-full bg-indigo-500"></span> Job View
+                                        </span>
+                                        <span
+                                            class="legend-item flex items-center gap-2 text-slate-500 dark:text-slate-400 text-xs font-medium">
+                                            <span
+                                                class="dot applied w-3 h-3 rounded-full bg-indigo-200 dark:bg-indigo-900/50 border border-indigo-200 dark:border-indigo-800"></span>
+                                            Job Applied
+                                        </span>
+                                    </div>
+                                    <select name="time-period" id="timePeriodSelect" aria-label="Select Time Period"
+                                        class="bg-slate-50 dark:bg-slate-700/50 border-0 rounded-lg py-1.5 pl-3 pr-8 text-xs font-medium text-slate-600 dark:text-slate-300 focus:ring-2 focus:ring-indigo-500 cursor-pointer">
+                                        <option value="this-month">This Month</option>
+                                        <option value="last-month">Last Month</option>
+                                        <option value="this-year">This Year</option>
+                                    </select>
                                 </div>
-                                <select name="time-period" aria-label="Select Time Period">
-                                    <option value="this-month">This Month</option>
-                                </select>
+                            </header>
+                            <div
+                                class="chart-container h-80 w-full bg-slate-50 dark:bg-slate-700/30 rounded-xl p-4 border border-dashed border-slate-200 dark:border-slate-600 relative">
+                                <canvas id="jobStatsChart"></canvas>
                             </div>
-                        </header>
-                        <div class="chart-container">
-                            <div class="bar-chart-placeholder">[Bar Chart Visualization]</div>
-                        </div>
-                    </section>
+                        </section>
 
-                    <section class="employee-status" aria-labelledby="emp-status-heading">
-                        <header class="section-header flex justify-between items-center mb-4">
-                            <h2 id="emp-status-heading">Employee Status</h2>
-                            <button type="button" class="filter-btn">Filter & Short ⚡</button>
+                        <section
+                            class="employee-composition bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 flex flex-col"
+                            aria-labelledby="emp-comp-heading">
+                            <header class="section-header mb-6">
+                                <h2 id="emp-comp-heading" class="text-lg font-bold text-slate-900 dark:text-white">
+                                    Employee Composition</h2>
+                            </header>
+                            <div class="donut-chart-container flex flex-col items-center justify-center gap-6 flex-1">
+                                <div
+                                    class="donut-chart-placeholder relative w-48 h-48 rounded-full flex items-center justify-center">
+                                    <canvas id="empCompositionChart" width="192" height="192"></canvas>
+                                    <div class="chart-center-text text-center z-10 absolute pointer-events-none">
+                                        <div class="text-2xl font-bold text-slate-900 dark:text-white">856</div>
+                                        <div class="text-xs text-slate-500 dark:text-slate-400">Total</div>
+                                    </div>
+                                </div>
+                                <div class="chart-labels w-full flex flex-col gap-3">
+                                    <span
+                                        class="label-female flex items-center justify-between text-sm font-medium text-slate-600 dark:text-slate-300">
+                                        <span class="flex items-center gap-2"><span
+                                                class="w-3 h-3 rounded-full bg-indigo-600"></span> Details for Female
+                                            %</span>
+                                        <span>45%</span>
+                                    </span>
+                                    <span
+                                        class="label-male flex items-center justify-between text-sm font-medium text-slate-600 dark:text-slate-300">
+                                        <span class="flex items-center gap-2"><span
+                                                class="w-3 h-3 rounded-full bg-indigo-200 dark:bg-slate-600"></span>
+                                            Details for Male %</span>
+                                        <span>55%</span>
+                                    </span>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+
+                    <section
+                        class="employee-status bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700"
+                        aria-labelledby="emp-status-heading">
+                        <header class="section-header flex justify-between items-center mb-6">
+                            <h2 id="emp-status-heading" class="text-lg font-bold text-slate-900 dark:text-white">
+                                Employee Status</h2>
+                            <button type="button"
+                                class="filter-btn flex items-center gap-2 px-4 py-2 bg-slate-50 dark:bg-slate-700/50 text-slate-600 dark:text-slate-300 rounded-lg text-sm font-medium hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
+                                Filter & Sort <span class="text-amber-500">⚡</span>
+                            </button>
                         </header>
 
-                        <div class="overflow-x-auto">
-                            <table class="w-full min-w-[600px]">
+                        <div class="overflow-x-auto rounded-xl border border-slate-100 dark:border-slate-700">
+                            <table class="w-full min-w-[800px] border-collapse bg-white dark:bg-slate-800 text-left">
                                 <thead>
                                     <tr>
-                                        <th>Employee Name</th>
-                                        <th>Department</th>
-                                        <th>Age</th>
-                                        <th>Discipline</th>
-                                        <th>Status</th>
+                                        <th
+                                            class="px-6 py-4 bg-slate-50 dark:bg-slate-700/30 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                                            Employee Name</th>
+                                        <th
+                                            class="px-6 py-4 bg-slate-50 dark:bg-slate-700/30 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                                            Department</th>
+                                        <th
+                                            class="px-6 py-4 bg-slate-50 dark:bg-slate-700/30 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                                            Age</th>
+                                        <th
+                                            class="px-6 py-4 bg-slate-50 dark:bg-slate-700/30 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                                            Discipline</th>
+                                        <th
+                                            class="px-6 py-4 bg-slate-50 dark:bg-slate-700/30 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                                            Status</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    <tr>
-                                        <td class="user-cell">
-                                            <img src="#" alt="Avatar" class="small-avatar">
-                                            Justin Lipshutz
+                                <tbody class="divide-y divide-slate-100 dark:divide-slate-700/50">
+                                    <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/30 transition-colors">
+                                        <td class="user-cell px-6 py-4 whitespace-nowrap">
+                                            <div class="flex items-center gap-3">
+                                                <img src="https://ui-avatars.com/api/?name=Justin+Lipshutz&background=random"
+                                                    alt="Avatar"
+                                                    class="small-avatar w-10 h-10 rounded-full object-cover ring-2 ring-white dark:ring-slate-700">
+                                                <span class="font-medium text-slate-900 dark:text-white">Justin
+                                                    Lipshutz</span>
+                                            </div>
                                         </td>
-                                        <td>Marketing</td>
-                                        <td>22</td>
-                                        <td class="positive">+100%</td>
-                                        <td><span class="status-badge permanent">Permanent</span></td>
+                                        <td
+                                            class="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">
+                                            Marketing</td>
+                                        <td
+                                            class="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">
+                                            22</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span
+                                                class="positive text-emerald-600 dark:text-emerald-400 font-medium">+100%</span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span
+                                                class="status-badge permanent inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400">Permanent</span>
+                                        </td>
                                     </tr>
-                                    <tr>
-                                        <td class="user-cell">
-                                            <img src="#" alt="Avatar" class="small-avatar">
-                                            Marcus Culhane
+                                    <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/30 transition-colors">
+                                        <td class="user-cell px-6 py-4 whitespace-nowrap">
+                                            <div class="flex items-center gap-3">
+                                                <img src="https://ui-avatars.com/api/?name=Marcus+Culhane&background=random"
+                                                    alt="Avatar"
+                                                    class="small-avatar w-10 h-10 rounded-full object-cover ring-2 ring-white dark:ring-slate-700">
+                                                <span class="font-medium text-slate-900 dark:text-white">Marcus
+                                                    Culhane</span>
+                                            </div>
                                         </td>
-                                        <td>Finance</td>
-                                        <td>24</td>
-                                        <td class="positive">+95%</td>
-                                        <td><span class="status-badge contract">Contract</span></td>
+                                        <td
+                                            class="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">
+                                            Finance</td>
+                                        <td
+                                            class="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">
+                                            24</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span
+                                                class="positive text-emerald-600 dark:text-emerald-400 font-medium">+95%</span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span
+                                                class="status-badge contract inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400">Contract</span>
+                                        </td>
                                     </tr>
-                                    <tr>
-                                        <td class="user-cell">
-                                            <img src="#" alt="Avatar" class="small-avatar">
-                                            Leo Stanton
+                                    <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/30 transition-colors">
+                                        <td class="user-cell px-6 py-4 whitespace-nowrap">
+                                            <div class="flex items-center gap-3">
+                                                <img src="https://ui-avatars.com/api/?name=Leo+Stanton&background=random"
+                                                    alt="Avatar"
+                                                    class="small-avatar w-10 h-10 rounded-full object-cover ring-2 ring-white dark:ring-slate-700">
+                                                <span class="font-medium text-slate-900 dark:text-white">Leo
+                                                    Stanton</span>
+                                            </div>
                                         </td>
-                                        <td>R&D</td>
-                                        <td>28</td>
-                                        <td class="positive">+89%</td>
-                                        <td><span class="status-badge permanent">Permanent</span></td>
+                                        <td
+                                            class="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">
+                                            R&D</td>
+                                        <td
+                                            class="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">
+                                            28</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span
+                                                class="positive text-emerald-600 dark:text-emerald-400 font-medium">+89%</span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span
+                                                class="status-badge permanent inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400">Permanent</span>
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
-                        </div>
-                    </section>
-
-                    <section class="employee-composition" aria-labelledby="emp-comp-heading">
-                        <header class="section-header mb-4">
-                            <h2 id="emp-comp-heading">Employee Composition</h2>
-                        </header>
-                        <div class="donut-chart-container flex flex-col lg:flex-row items-center gap-8">
-                            <div class="donut-chart-placeholder">
-                                [Donut Chart]
-                                <div class="chart-center-text">856 employee total</div>
-                            </div>
-                            <div class="chart-labels flex flex-col gap-2">
-                                <span class="label-female">Details for Female %</span>
-                                <span class="label-male">Details for Male %</span>
-                            </div>
                         </div>
                     </section>
                 </div>
             </main>
         </div>
     </div>
+    <script>
+        // Chart Configuration & Logic
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Job Stats Bar Chart ---
+            const ctx = document.getElementById('jobStatsChart').getContext('2d');
 
+            // Mock Data
+            const chartData = {
+                'this-month': {
+                    labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+                    view: [1200, 1900, 1500, 2100],
+                    applied: [400, 600, 450, 700]
+                },
+                'last-month': {
+                    labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+                    view: [1100, 1400, 1300, 1700],
+                    applied: [300, 450, 400, 550]
+                },
+                'this-year': {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                    view: [3000, 4500, 3200, 5000, 4200, 5500, 4800, 5100, 4300, 6000, 5200, 6500],
+                    applied: [800, 1200, 950, 1500, 1100, 1600, 1300, 1400, 1200, 1800, 1400, 1900]
+                }
+            };
+
+            // Colors
+            const colors = {
+                indigo500: '#6366f1',
+                indigo200: '#e0e7ff',
+                indigo800: '#312e81', // Dark mode applied bg
+                textSlate400: '#94a3b8',
+                gridSlate200: '#e2e8f0',
+                gridSlate700: '#334155'
+            };
+
+            let jobChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: chartData['this-month'].labels,
+                    datasets: [
+                        {
+                            label: 'Job View',
+                            data: chartData['this-month'].view,
+                            backgroundColor: colors.indigo500,
+                            borderRadius: 4,
+                            barPercentage: 0.6,
+                            categoryPercentage: 0.8
+                        },
+                        {
+                            label: 'Job Applied',
+                            data: chartData['this-month'].applied,
+                            backgroundColor: colors.indigo200,
+                            borderRadius: 4,
+                            barPercentage: 0.6,
+                            categoryPercentage: 0.8
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }, // Use custom HTML legend
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                            backgroundColor: 'rgba(30, 41, 59, 0.9)',
+                            titleColor: '#f8fafc',
+                            bodyColor: '#f8fafc',
+                            borderColor: 'rgba(255,255,255,0.1)',
+                            borderWidth: 1,
+                            padding: 10,
+                            cornerRadius: 8
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: document.documentElement.classList.contains('dark') ? colors.gridSlate700 : colors.gridSlate200,
+                                drawBorder: false,
+                                borderDash: [4, 4]
+                            },
+                            ticks: {
+                                color: colors.textSlate400,
+                                padding: 10,
+                                font: { family: "'Inter', sans-serif" }
+                            }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: {
+                                color: colors.textSlate400,
+                                font: { family: "'Inter', sans-serif" }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // --- Employee Composition Donut Chart ---
+            const empCtx = document.getElementById('empCompositionChart').getContext('2d');
+            let empChart = new Chart(empCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Female', 'Male'],
+                    datasets: [{
+                        data: [45, 55],
+                        backgroundColor: [colors.indigo500, colors.indigo200],
+                        borderWidth: 0,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    cutout: '80%',
+                    plugins: { legend: { display: false } }
+                }
+            });
+
+            // Update Handler
+            const updateCharts = () => {
+                const isDark = document.documentElement.classList.contains('dark');
+
+                // Update Job Chart Colors
+                jobChart.data.datasets[1].backgroundColor = isDark ? 'rgba(49, 46, 129, 0.5)' : colors.indigo200;
+                jobChart.data.datasets[1].borderColor = isDark ? '#4338ca' : 'transparent';
+                jobChart.data.datasets[1].borderWidth = isDark ? 1 : 0;
+
+                jobChart.options.scales.y.grid.color = isDark ? colors.gridSlate700 : colors.gridSlate200;
+                jobChart.update();
+
+                // Update Donut Chart Colors
+                empChart.data.datasets[0].backgroundColor = [
+                    colors.indigo500,
+                    isDark ? '#475569' : colors.indigo200 // Slate-600 for dark mode secondary
+                ];
+                empChart.update();
+            };
+
+            // Time Filter Listener
+            document.getElementById('timePeriodSelect').addEventListener('change', (e) => {
+                const period = e.target.value;
+                const data = chartData[period];
+
+                jobChart.data.labels = data.labels;
+                jobChart.data.datasets[0].data = data.view;
+                jobChart.data.datasets[1].data = data.applied;
+                jobChart.update();
+            });
+
+            // Observer for Dark Mode Toggle
+            const observer = new MutationObserver(() => {
+                updateCharts();
+            });
+            observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+
+            // Initial Dark Mode Check
+            updateCharts();
+        });
+    </script>
 </body>
 
 </html>
